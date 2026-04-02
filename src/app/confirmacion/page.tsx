@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle, Calendar, MapPin, Share2, Download, Instagram } from "lucide-react";
+import { CheckCircle, Calendar, MapPin, Share2, Download, Camera } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Suspense } from "react";
@@ -86,7 +86,7 @@ function ContenidoConfirmacion() {
               target="_blank" 
               className="w-full border-2 border-slate-100 text-slate-500 py-5 rounded-2xl font-bold uppercase tracking-widest hover:border-rosa-acento hover:text-rosa-acento transition-all flex items-center justify-center gap-3"
             >
-              Compartir en Instagram <Share2 size={20} />
+              Compartir en Instagram <Camera size={20} />
             </a>
           </div>
 
