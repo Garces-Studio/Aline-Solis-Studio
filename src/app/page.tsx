@@ -1,12 +1,14 @@
 "use client";
 
 import { motion, AnimatePresence, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 import {
   Sparkles, MapPin, Phone, ShoppingBag,
   Gift, Calendar, Clock, ChevronRight, CheckCircle,
   Heart, Menu, X, Shield, ArrowRight,
-  Package, Truck
+  Package, Truck, User
 } from "lucide-react";
 
 function InstagramIcon({ size = 18, className = "" }: { size?: number; className?: string }) {
@@ -92,10 +94,17 @@ function FadeInUp({ children, delay = 0, className = "" }: { children: React.Rea
 
 function Navbar() {
   const [open, setOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setLoggedIn(!!data.session));
+    const { data: listener } = supabase.auth.onAuthStateChange((_e, s) => setLoggedIn(!!s));
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
   const links = [
     { href: "#servicios", label: "Servicios" },
-    { href: "#lealtad", label: "Club VIP" },
-    { href: "#galeria", label: "Galería" },
+    { href: "#galeria", label: "Instagram" },
     { href: "#tienda", label: "Tienda" },
     { href: "#contacto", label: "Contacto" },
   ];
@@ -119,12 +128,20 @@ function Navbar() {
           ))}
         </div>
 
-        <a
-          href="#servicios"
-          className="hidden md:flex items-center gap-2 bg-rosa-acento text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-rosa-acento/90 transition-all hover:shadow-lg hover:shadow-rosa-acento/30 hover:-translate-y-0.5"
-        >
-          Reservar <Calendar size={14} />
-        </a>
+        <div className="hidden md:flex items-center gap-3">
+          <Link
+            href={loggedIn ? "/cuenta" : "/login"}
+            className="flex items-center gap-1.5 text-sm font-semibold text-negro-lujo/70 hover:text-rosa-acento transition-colors px-3 py-2 rounded-full hover:bg-rosa-suave/50"
+          >
+            <User size={15} /> {loggedIn ? "Mi cuenta" : "Iniciar sesión"}
+          </Link>
+          <a
+            href="#servicios"
+            className="flex items-center gap-2 bg-rosa-acento text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-rosa-acento/90 transition-all hover:shadow-lg hover:shadow-rosa-acento/30 hover:-translate-y-0.5"
+          >
+            Reservar <Calendar size={14} />
+          </a>
+        </div>
 
         <button onClick={() => setOpen(!open)} className="md:hidden text-negro-lujo">
           {open ? <X size={24} /> : <Menu size={24} />}
@@ -144,7 +161,10 @@ function Navbar() {
                 {l.label}
               </a>
             ))}
-            <a href="#servicios" className="mt-4 w-full flex justify-center bg-rosa-acento text-white py-3 rounded-full font-semibold">
+            <Link href={loggedIn ? "/cuenta" : "/login"} onClick={() => setOpen(false)} className="mt-4 w-full flex justify-center border-2 border-rosa-acento text-rosa-acento py-3 rounded-full font-semibold">
+              {loggedIn ? "Mi cuenta" : "Iniciar sesión"}
+            </Link>
+            <a href="#servicios" onClick={() => setOpen(false)} className="mt-3 w-full flex justify-center bg-rosa-acento text-white py-3 rounded-full font-semibold">
               Reservar cita
             </a>
           </motion.div>
@@ -298,7 +318,7 @@ function ServicesSection() {
   }
 
   return (
-    <section id="servicios" className="py-28 px-6 bg-white">
+    <section id="servicios" className="py-20 px-6 bg-white">
       <div className="max-w-7xl mx-auto">
         <FadeInUp className="text-center mb-16">
           <span className="text-rosa-acento text-sm font-bold uppercase tracking-[0.3em]">Nuestros servicios</span>
@@ -407,7 +427,7 @@ function ServicesSection() {
 
 function LoyaltySection() {
   return (
-    <section id="lealtad" className="py-28 px-6 bg-gradient-to-br from-negro-lujo via-negro-lujo/95 to-negro-lujo relative overflow-hidden">
+    <section id="lealtad" className="py-20 px-6 bg-gradient-to-br from-negro-lujo via-negro-lujo/95 to-negro-lujo relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-96 h-96 bg-rosa-acento/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-rosa-medio/10 rounded-full blur-3xl" />
@@ -474,46 +494,83 @@ function LoyaltySection() {
   );
 }
 
+// ── INSTAGRAM FEED ────────────────────────────────────────────────────────────
+// Para conectar fotos reales: usa https://behold.so (gratis, sin API key)
+// y reemplaza el grid con su widget embed <behold-widget feed-id="TU_ID" />
+
 function GallerySection() {
+  // Publicaciones de muestra — reemplazar con widget real de Behold.io
+  const posts = GALERIA_ITEMS.map((item, i) => ({
+    ...item,
+    likes: [128, 243, 97, 310, 175, 88][i] ?? 100,
+    comentarios: [14, 32, 8, 41, 20, 11][i] ?? 10,
+  }));
+
   return (
-    <section id="galeria" className="py-28 px-6 bg-crema">
-      <div className="max-w-7xl mx-auto">
-        <FadeInUp className="text-center mb-16">
-          <span className="text-rosa-acento text-sm font-bold uppercase tracking-[0.3em]">Portfolio</span>
-          <h2 className="text-4xl md:text-5xl font-bold text-negro-lujo mt-3 mb-4">
-            Nuestros trabajos
-          </h2>
-          <p className="text-negro-lujo/60 max-w-xl mx-auto">
-            Cada diseño es único. Síguenos en Instagram para ver más.
-          </p>
-        </FadeInUp>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {GALERIA_ITEMS.map((item, i) => (
-            <FadeInUp key={i} delay={i * 0.06}>
-              <div className={`group relative rounded-3xl overflow-hidden aspect-square bg-gradient-to-br ${item.gradient} cursor-pointer`}>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <div className="text-6xl mb-3 group-hover:scale-125 transition-transform duration-500">{item.icon}</div>
-                  <div className="text-white/0 group-hover:text-white transition-all duration-300 text-center px-4">
-                    <p className="font-bold text-lg leading-tight">{item.titulo}</p>
-                    <p className="text-sm opacity-80">{item.categoria}</p>
-                  </div>
-                </div>
-                <div className="absolute inset-0 bg-negro-lujo/0 group-hover:bg-negro-lujo/30 transition-all duration-300 rounded-3xl" />
+    <section id="galeria" className="py-20 px-6 bg-white">
+      <div className="max-w-5xl mx-auto">
+        {/* Header estilo Instagram */}
+        <FadeInUp className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-10">
+          <div className="flex items-center gap-4">
+            {/* Avatar simulado */}
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 via-rosa-acento to-orange-400 p-0.5">
+              <div className="w-full h-full rounded-full bg-white flex items-center justify-center text-2xl">
+                💅
               </div>
-            </FadeInUp>
-          ))}
-        </div>
-
-        <FadeInUp className="text-center mt-10">
+            </div>
+            <div>
+              <p className="font-black text-negro-lujo text-lg leading-none">@aline_solis_studio</p>
+              <p className="text-negro-lujo/50 text-sm mt-0.5">Studio de belleza · Nezahualcóyotl</p>
+              <div className="flex gap-4 mt-2 text-xs text-negro-lujo/60 font-medium">
+                <span><b className="text-negro-lujo">500+</b> clientas</span>
+                <span><b className="text-negro-lujo">6</b> posts recientes</span>
+              </div>
+            </div>
+          </div>
           <a
             href="https://www.instagram.com/aline_solis_studio/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500 via-rosa-acento to-orange-400 text-white px-8 py-4 rounded-full font-bold hover:opacity-90 transition-all hover:shadow-xl hover:-translate-y-1"
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-500 via-rosa-acento to-orange-400 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:opacity-90 transition-all hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap"
           >
-            <InstagramIcon size={18} /> Ver más en Instagram
+            <InstagramIcon size={16} /> Seguir en Instagram
           </a>
+        </FadeInUp>
+
+        {/* Grid de posts */}
+        <div className="grid grid-cols-3 gap-1.5 md:gap-2.5">
+          {posts.map((post, i) => (
+            <FadeInUp key={i} delay={i * 0.05}>
+              <a
+                href="https://www.instagram.com/aline_solis_studio/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group relative rounded-2xl overflow-hidden aspect-square bg-gradient-to-br ${post.gradient} block`}
+              >
+                {/* Contenido */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-4xl md:text-5xl group-hover:scale-110 transition-transform duration-500 drop-shadow-lg">
+                    {post.icon}
+                  </span>
+                </div>
+
+                {/* Overlay on hover */}
+                <div className="absolute inset-0 bg-negro-lujo/0 group-hover:bg-negro-lujo/50 transition-all duration-300 flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                  <p className="text-white font-bold text-sm text-center px-3 leading-tight">{post.titulo}</p>
+                  <div className="flex items-center gap-3 text-white text-xs font-semibold">
+                    <span>❤️ {post.likes}</span>
+                    <span>💬 {post.comentarios}</span>
+                  </div>
+                </div>
+              </a>
+            </FadeInUp>
+          ))}
+        </div>
+
+        <FadeInUp className="text-center mt-8">
+          <p className="text-negro-lujo/40 text-xs">
+            Muestras de nuestro trabajo · Síguenos para ver más diseños diario
+          </p>
         </FadeInUp>
       </div>
     </section>
@@ -522,7 +579,7 @@ function GallerySection() {
 
 function StoreSection() {
   return (
-    <section id="tienda" className="py-28 px-6 bg-white">
+    <section id="tienda" className="py-20 px-6 bg-white">
       <div className="max-w-7xl mx-auto">
         <FadeInUp className="text-center mb-16">
           <span className="text-rosa-acento text-sm font-bold uppercase tracking-[0.3em]">Tienda online</span>
@@ -707,14 +764,6 @@ const TESTIMONIOS = [
     tiempo: "hace 3 semanas",
     avatar: "👩🏽‍🦲",
   },
-  {
-    nombre: "Sofía T.",
-    texto: "Ya voy a mi cuarta visita y el servicio siempre es perfecto. El club VIP es un excelente beneficio que ningún otro studio tiene.",
-    servicio: "Pedicura Spa",
-    estrellas: 5,
-    tiempo: "hace 1 mes",
-    avatar: "👱‍♀️",
-  },
 ];
 
 function TestimonialsSection() {
@@ -731,7 +780,7 @@ function TestimonialsSection() {
           </p>
         </FadeInUp>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {TESTIMONIOS.map((t, i) => (
             <FadeInUp key={t.nombre} delay={i * 0.1}>
               <motion.div
@@ -778,23 +827,13 @@ function TestimonialsSection() {
           ))}
         </div>
 
-        {/* Aggregate rating badge */}
-        <FadeInUp delay={0.3} className="mt-12 flex justify-center">
-          <motion.div
-            whileHover={{ scale: 1.03 }}
-            className="inline-flex items-center gap-5 bg-white border border-rosa-suave rounded-3xl px-8 py-5 shadow-lg"
+        <FadeInUp delay={0.3} className="mt-10 text-center">
+          <a
+            href="#servicios"
+            className="inline-flex items-center gap-2 bg-rosa-acento text-white px-8 py-3.5 rounded-full font-bold text-sm hover:bg-negro-lujo transition-all shadow-lg shadow-rosa-acento/30 hover:-translate-y-0.5"
           >
-            <div className="text-5xl">⭐</div>
-            <div>
-              <div className="text-4xl font-black text-negro-lujo leading-none">5.0</div>
-              <div className="text-negro-lujo/50 text-sm mt-0.5">Calificación promedio</div>
-            </div>
-            <div className="w-px h-12 bg-rosa-suave" />
-            <div>
-              <div className="text-4xl font-black text-rosa-acento leading-none">500+</div>
-              <div className="text-negro-lujo/50 text-sm mt-0.5">Reseñas de clientas</div>
-            </div>
-          </motion.div>
+            Reservar mi cita <ArrowRight size={15} />
+          </a>
         </FadeInUp>
       </div>
     </section>
@@ -803,7 +842,7 @@ function TestimonialsSection() {
 
 function AboutSection() {
   return (
-    <section id="contacto" className="py-28 px-6 bg-crema">
+    <section id="contacto" className="py-20 px-6 bg-crema">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <FadeInUp>
@@ -854,34 +893,34 @@ function AboutSection() {
           </FadeInUp>
 
           <FadeInUp delay={0.2}>
-            <div className="relative">
-              <div className="bg-gradient-to-br from-rosa-suave via-white to-rosa-medio/30 rounded-[3rem] p-10 text-center border border-rosa-acento/10 shadow-2xl shadow-rosa-acento/5">
-                <div className="text-8xl mb-6 float-animation">💅</div>
-                <h3 className="text-2xl font-black text-negro-lujo mb-3">Reserva ahora</h3>
-                <p className="text-negro-lujo/60 mb-8 text-sm">
-                  Elige tu servicio, paga el anticipo en línea y te confirmamos por WhatsApp.
-                  ¡Así de fácil!
-                </p>
-                <a
-                  href="#servicios"
-                  className="inline-flex items-center gap-2 bg-rosa-acento text-white px-8 py-4 rounded-full font-bold text-base hover:bg-negro-lujo transition-all duration-300 shadow-xl shadow-rosa-acento/30 w-full justify-center"
-                >
-                  Ver servicios <ArrowRight size={16} />
-                </a>
+            <div className="space-y-4">
+              {/* Google Maps embed */}
+              <div className="rounded-3xl overflow-hidden border border-rosa-suave shadow-xl">
+                <iframe
+                  title="Ubicación Aline Solis Studio"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d60373.67!2d-98.9977!3d19.4135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1f38f7e96d921%3A0x8f3d4b5dba9c7d9!2sNezahualc%C3%B3yotl%2C%20Estado%20de%20M%C3%A9xico!5e0!3m2!1ses!2smx!4v1648000000000!5m2!1ses!2smx"
+                  width="100%"
+                  height="300"
+                  style={{ border: 0, display: "block" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
 
-              <motion.div
-                className="absolute -top-6 -right-6 bg-white rounded-2xl shadow-xl p-4 border border-rosa-suave"
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
-              >
-                <div className="flex items-center gap-2">
-                  <div className="flex">
-                    {["⭐", "⭐", "⭐", "⭐", "⭐"].map((s, i) => <span key={i} className="text-sm">{s}</span>)}
-                  </div>
+              {/* CTA card debajo del mapa */}
+              <div className="bg-gradient-to-r from-rosa-acento to-rosa-medio/80 rounded-3xl p-6 flex items-center justify-between">
+                <div>
+                  <p className="text-white font-bold text-base leading-tight">¿Lista para brillar?</p>
+                  <p className="text-white/70 text-sm mt-0.5">Reserva tu cita en minutos</p>
                 </div>
-                <p className="text-xs font-bold text-negro-lujo mt-1">500+ reseñas positivas</p>
-              </motion.div>
+                <a
+                  href="#servicios"
+                  className="bg-white text-rosa-acento px-5 py-2.5 rounded-full font-bold text-sm hover:bg-negro-lujo hover:text-white transition-all shadow-lg whitespace-nowrap"
+                >
+                  Reservar
+                </a>
+              </div>
             </div>
           </FadeInUp>
         </div>
