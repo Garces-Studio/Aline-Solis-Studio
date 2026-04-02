@@ -590,6 +590,217 @@ function StoreSection() {
   );
 }
 
+// ── HOW IT WORKS ──────────────────────────────────────────────────────────────
+
+function HowItWorksSection() {
+  const pasos = [
+    {
+      numero: "01",
+      titulo: "Elige tu servicio",
+      descripcion: "Navega nuestro menú y selecciona el tratamiento que quieres. Manicura, pedicura, pestañas y más.",
+      icon: "💅",
+      color: "from-rosa-acento to-rosa-medio",
+    },
+    {
+      numero: "02",
+      titulo: "Paga en línea",
+      descripcion: "Asegura tu cita con un anticipo seguro a través de MercadoPago. Rápido, fácil y sin complicaciones.",
+      icon: "💳",
+      color: "from-purple-400 to-rosa-acento",
+    },
+    {
+      numero: "03",
+      titulo: "Llega y brilla",
+      descripcion: "Te confirmamos por WhatsApp con fecha y hora. Solo llega, relájate y disfruta. ¡Nosotras nos encargamos del resto!",
+      icon: "✨",
+      color: "from-amber-400 to-rosa-acento",
+    },
+  ];
+
+  return (
+    <section className="py-24 px-6 bg-white relative overflow-hidden">
+      {/* subtle bg pattern */}
+      <div className="absolute inset-0 pointer-events-none opacity-30">
+        <div className="absolute top-0 left-1/4 w-72 h-72 bg-rosa-suave rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-rosa-medio/30 rounded-full blur-3xl" />
+      </div>
+
+      <div className="max-w-5xl mx-auto relative z-10">
+        <FadeInUp className="text-center mb-16">
+          <span className="text-rosa-acento text-sm font-bold uppercase tracking-[0.3em]">Simple y rápido</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-negro-lujo mt-3 mb-4">
+            ¿Cómo funciona?
+          </h2>
+          <p className="text-negro-lujo/60 max-w-lg mx-auto">
+            Reservar nunca fue tan fácil. En 3 pasos tienes tu cita lista.
+          </p>
+        </FadeInUp>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+          {/* connecting line on desktop */}
+          <div className="hidden md:block absolute top-12 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-0.5 bg-gradient-to-r from-rosa-acento/20 via-rosa-acento to-rosa-acento/20" />
+
+          {pasos.map((paso, i) => (
+            <FadeInUp key={paso.numero} delay={i * 0.15}>
+              <div className="relative flex flex-col items-center text-center group">
+                {/* number bubble */}
+                <motion.div
+                  className={`relative w-24 h-24 rounded-full bg-gradient-to-br ${paso.color} flex items-center justify-center shadow-xl mb-6 z-10`}
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <span className="text-4xl">{paso.icon}</span>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-negro-lujo rounded-full flex items-center justify-center">
+                    <span className="text-white text-xs font-black">{paso.numero}</span>
+                  </div>
+                </motion.div>
+
+                <h3 className="text-xl font-bold text-negro-lujo mb-3 group-hover:text-rosa-acento transition-colors">
+                  {paso.titulo}
+                </h3>
+                <p className="text-negro-lujo/60 text-sm leading-relaxed max-w-xs">
+                  {paso.descripcion}
+                </p>
+              </div>
+            </FadeInUp>
+          ))}
+        </div>
+
+        <FadeInUp delay={0.4} className="mt-14 text-center">
+          <a
+            href="#servicios"
+            className="group inline-flex items-center gap-3 bg-rosa-acento text-white px-10 py-4 rounded-full font-bold text-base hover:bg-negro-lujo transition-all duration-300 shadow-xl shadow-rosa-acento/30 hover:-translate-y-1"
+          >
+            Empezar ahora
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+          </a>
+        </FadeInUp>
+      </div>
+    </section>
+  );
+}
+
+// ── TESTIMONIALS ──────────────────────────────────────────────────────────────
+
+const TESTIMONIOS = [
+  {
+    nombre: "Karla M.",
+    texto: "Las mejores pestañas que me han hecho en mi vida. Duran muchísimo y el trato es increíble. Ya no voy a ningún otro lado.",
+    servicio: "Volumen Ruso",
+    estrellas: 5,
+    tiempo: "hace 1 semana",
+    avatar: "👩‍🦱",
+  },
+  {
+    nombre: "Daniela R.",
+    texto: "El sistema de reservas online es genial. Pagué, me confirmaron por WhatsApp y llegué directo a mi cita. Súper profesional.",
+    servicio: "Manicura en Gel",
+    estrellas: 5,
+    tiempo: "hace 2 semanas",
+    avatar: "👩🏻",
+  },
+  {
+    nombre: "Paola G.",
+    texto: "El Nail Art que me hicieron fue una obra de arte. Mis amigas no podían creer que lo hicieron aquí en Neza. ¡100% recomendado!",
+    servicio: "Nail Art Premium",
+    estrellas: 5,
+    tiempo: "hace 3 semanas",
+    avatar: "👩🏽‍🦲",
+  },
+  {
+    nombre: "Sofía T.",
+    texto: "Ya voy a mi cuarta visita y el servicio siempre es perfecto. El club VIP es un excelente beneficio que ningún otro studio tiene.",
+    servicio: "Pedicura Spa",
+    estrellas: 5,
+    tiempo: "hace 1 mes",
+    avatar: "👱‍♀️",
+  },
+];
+
+function TestimonialsSection() {
+  return (
+    <section id="reseñas" className="py-24 px-6 bg-gradient-to-br from-crema via-rosa-suave/30 to-crema overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <FadeInUp className="text-center mb-16">
+          <span className="text-rosa-acento text-sm font-bold uppercase tracking-[0.3em]">Clientas felices</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-negro-lujo mt-3 mb-4">
+            Lo que dicen de nosotras
+          </h2>
+          <p className="text-negro-lujo/60 max-w-lg mx-auto">
+            Más de 500 clientas confían en Aline Solis Studio. Estos son sus testimonios reales.
+          </p>
+        </FadeInUp>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {TESTIMONIOS.map((t, i) => (
+            <FadeInUp key={t.nombre} delay={i * 0.1}>
+              <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="bg-white rounded-3xl p-7 shadow-md hover:shadow-xl hover:shadow-rosa-acento/10 transition-shadow border border-rosa-suave/60"
+              >
+                {/* stars */}
+                <div className="flex gap-0.5 mb-4">
+                  {Array.from({ length: t.estrellas }).map((_, idx) => (
+                    <motion.span
+                      key={idx}
+                      initial={{ opacity: 0, scale: 0 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1 + idx * 0.05 }}
+                      className="text-amber-400 text-lg"
+                    >
+                      ★
+                    </motion.span>
+                  ))}
+                </div>
+
+                <p className="text-negro-lujo/80 text-base leading-relaxed mb-6 italic">
+                  &ldquo;{t.texto}&rdquo;
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 bg-rosa-suave rounded-full flex items-center justify-center text-2xl">
+                      {t.avatar}
+                    </div>
+                    <div>
+                      <p className="font-bold text-negro-lujo text-sm">{t.nombre}</p>
+                      <p className="text-negro-lujo/40 text-xs">{t.tiempo}</p>
+                    </div>
+                  </div>
+                  <span className="bg-rosa-suave/80 text-rosa-acento text-xs font-semibold px-3 py-1.5 rounded-full">
+                    {t.servicio}
+                  </span>
+                </div>
+              </motion.div>
+            </FadeInUp>
+          ))}
+        </div>
+
+        {/* Aggregate rating badge */}
+        <FadeInUp delay={0.3} className="mt-12 flex justify-center">
+          <motion.div
+            whileHover={{ scale: 1.03 }}
+            className="inline-flex items-center gap-5 bg-white border border-rosa-suave rounded-3xl px-8 py-5 shadow-lg"
+          >
+            <div className="text-5xl">⭐</div>
+            <div>
+              <div className="text-4xl font-black text-negro-lujo leading-none">5.0</div>
+              <div className="text-negro-lujo/50 text-sm mt-0.5">Calificación promedio</div>
+            </div>
+            <div className="w-px h-12 bg-rosa-suave" />
+            <div>
+              <div className="text-4xl font-black text-rosa-acento leading-none">500+</div>
+              <div className="text-negro-lujo/50 text-sm mt-0.5">Reseñas de clientas</div>
+            </div>
+          </motion.div>
+        </FadeInUp>
+      </div>
+    </section>
+  );
+}
+
 function AboutSection() {
   return (
     <section id="contacto" className="py-28 px-6 bg-crema">
@@ -743,7 +954,9 @@ export default function Home() {
     <>
       <Navbar />
       <HeroSection />
+      <HowItWorksSection />
       <ServicesSection />
+      <TestimonialsSection />
       <LoyaltySection />
       <GallerySection />
       <StoreSection />
