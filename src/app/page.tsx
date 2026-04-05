@@ -768,8 +768,13 @@ const TESTIMONIOS = [
 
 function TestimonialsSection() {
   return (
-    <section id="reseñas" className="py-24 px-6 bg-gradient-to-br from-crema via-rosa-suave/30 to-crema overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+    <section id="reseñas" className="py-24 px-6 relative overflow-hidden bg-gradient-to-br from-rosa-suave via-white to-rosa-medio/20">
+      {/* Animated geometric background elements for a better look */}
+      <div className="absolute inset-0 pointer-events-none opacity-40">
+        <motion.div animate={{ rotate: 360 }} transition={{ duration: 60, repeat: Infinity, ease: "linear" }} className="absolute -top-1/2 -left-1/4 w-[150%] h-[150%] bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-rosa-acento/10 via-transparent to-rosa-suave" />
+      </div>
+      
+      <div className="max-w-7xl mx-auto relative z-10">
         <FadeInUp className="text-center mb-16">
           <span className="text-rosa-acento text-sm font-bold uppercase tracking-[0.3em]">Clientas felices</span>
           <h2 className="text-4xl md:text-5xl font-bold text-negro-lujo mt-3 mb-4">
